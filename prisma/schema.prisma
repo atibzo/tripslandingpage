@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model CuratedList {
+  id              Int               @id @default(autoincrement())
+  type            String            // "automatic" | "manual"
+  title           String
+  slug            String            @unique
+  rule            String?
+  rule_parameter  String?
+  enabled         Boolean           @default(true)
+  display_order   Int               @default(0)
+  status          String            @default("draft") // "live" | "draft" | "hidden"
+  published_at    DateTime?
+  last_reviewed_at DateTime?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  trips           CuratedListTrip[]
+}
+
+model CuratedListTrip {
+  id             Int          @id @default(autoincrement())
+  list_id        Int
+  trip_id        String
+  trip_name      String
+  trip_image     String
+  trip_tag       String?
+  trip_duration  String
+  trip_price     Int
+  trip_sold_out  Boolean      @default(false)
+  seats_left     Int?
+  next_batch     String?
+  position       Int          @default(0)
+  list           CuratedList  @relation(fields: [list_id], references: [id], onDelete: Cascade)
+
+  @@unique([list_id, trip_id])
+}
