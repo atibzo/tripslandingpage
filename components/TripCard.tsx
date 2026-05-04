@@ -1,4 +1,4 @@
-import type { CuratedListTrip } from '@prisma/client'
+import type { CuratedListTrip } from '@/lib/prismaTypes'
 
 export function getUrgencyLabel(trip: CuratedListTrip): { label: string; color: string } | null {
   if (trip.seats_left !== null && trip.seats_left > 0 && trip.seats_left <= 5) {

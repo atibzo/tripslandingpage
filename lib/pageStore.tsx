@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useReducer } from 'react'
-import type { CuratedList, CuratedListTrip } from '@prisma/client'
+import type { CuratedList, CuratedListTrip } from '@/lib/prismaTypes'
 
 export type ListWithTrips = CuratedList & { trips: CuratedListTrip[] }
 export type TrendingDest = { name: string; img: string; duration: string }
