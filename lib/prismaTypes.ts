@@ -17,6 +17,7 @@ export type CuratedList = {
   id: number
   type: string
   title: string
+  subtitle: string | null
   slug: string
   rule: string | null
   rule_parameter: string | null

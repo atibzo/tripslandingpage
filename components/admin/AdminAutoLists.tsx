@@ -8,6 +8,7 @@ const AUTO_TEMPLATES = [
   {
     key: 'leaving-soon',
     title: 'Leaving Soon',
+    defaultSubtitle: 'Trips departing in the next 30 days',
     description: 'Trips with next batch departing within 14 days',
     rule: 'next_batch_within_days',
     rule_parameter: '14',
@@ -16,6 +17,7 @@ const AUTO_TEMPLATES = [
   {
     key: 'filling-fast',
     title: 'Filling Fast',
+    defaultSubtitle: 'Limited seats — grab your spot now',
     description: 'Trips with fewer than 6 seats remaining',
     rule: 'seats_left_below',
     rule_parameter: '6',
@@ -24,6 +26,7 @@ const AUTO_TEMPLATES = [
   {
     key: 'newly-added',
     title: 'Newly Added',
+    defaultSubtitle: 'Fresh trips just added to the lineup',
     description: 'Trips added in the last 30 days',
     rule: 'added_within_days',
     rule_parameter: '30',
@@ -32,6 +35,7 @@ const AUTO_TEMPLATES = [
   {
     key: 'budget-picks',
     title: 'Budget Picks',
+    defaultSubtitle: 'Great experiences under ₹20,000',
     description: 'Trips priced under ₹20,000',
     rule: 'price_below',
     rule_parameter: '20000',
@@ -43,6 +47,28 @@ export default function AdminAutoLists({ onRefresh }: { onRefresh: () => void })
   const { state } = usePageStore()
   const lists = (state.lists ?? []).filter((l) => l.type === 'automatic')
   const [toggling, setToggling] = useState<string | null>(null)
+  const [subtitles, setSubtitles] = useState<Record<string, string>>({})
+  const [savingSubtitle, setSavingSubtitle] = useState<string | null>(null)
+
+  function getSubtitle(template: typeof AUTO_TEMPLATES[0], existing?: ListWithTrips) {
+    if (template.key in subtitles) return subtitles[template.key]
+    return existing?.subtitle ?? template.defaultSubtitle
+  }
+
+  async function saveSubtitle(template: typeof AUTO_TEMPLATES[0], existing?: ListWithTrips) {
+    if (!existing) return
+    setSavingSubtitle(template.key)
+    try {
+      await fetch(`/api/lists/${existing.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...existing, subtitle: subtitles[template.key] ?? existing.subtitle }),
+      })
+      onRefresh()
+    } finally {
+      setSavingSubtitle(null)
+    }
+  }
 
   async function toggleList(template: typeof AUTO_TEMPLATES[0], currentList?: ListWithTrips) {
     setToggling(template.key)
@@ -60,6 +86,7 @@ export default function AdminAutoLists({ onRefresh }: { onRefresh: () => void })
           body: JSON.stringify({
             type: 'automatic',
             title: template.title,
+            subtitle: subtitles[template.key] ?? template.defaultSubtitle,
             slug: template.key,
             rule: template.rule,
             rule_parameter: template.rule_parameter,
@@ -114,6 +141,26 @@ export default function AdminAutoLists({ onRefresh }: { onRefresh: () => void })
               <div className="flex items-center gap-3 mt-4">
                 <div className="text-xs text-gray-500">Rule: <span className="text-gray-300">{template.rule}</span></div>
                 <div className="text-xs text-gray-500">Param: <span className="text-gray-300">{template.rule_parameter}</span></div>
+              </div>
+              <div className="mt-3">
+                <label className="text-xs text-gray-500 mb-1 block">Subtitle</label>
+                <div className="flex gap-2">
+                  <input
+                    value={getSubtitle(template, existing)}
+                    onChange={(e) => setSubtitles((prev) => ({ ...prev, [template.key]: e.target.value }))}
+                    placeholder={template.defaultSubtitle}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#ccff00]/50"
+                  />
+                  {existing && template.key in subtitles && (
+                    <button
+                      onClick={() => saveSubtitle(template, existing)}
+                      disabled={savingSubtitle === template.key}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-[#ccff00]/10 text-[#ccff00] hover:bg-[#ccff00]/20 transition-colors disabled:opacity-50"
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
               </div>
               {existing && (
                 <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">

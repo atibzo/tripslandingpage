@@ -10,6 +10,7 @@ model CuratedList {
   id              Int               @id @default(autoincrement())
   type            String            // "automatic" | "manual"
   title           String
+  subtitle        String?
   slug            String            @unique
   rule            String?
   rule_parameter  String?

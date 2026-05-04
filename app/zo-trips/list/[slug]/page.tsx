@@ -6,12 +6,6 @@ import type { CuratedListTrip as Trip } from '@/lib/prismaTypes'
 
 export const revalidate = 0
 
-const LIST_SUBTITLES: Record<string, string> = {
-  'leaving-soon':   'Trips departing in the next 30 days',
-  'filling-fast':   'Limited seats — grab your spot now',
-  'grand-prix-2026':'Experience the thrill of Formula 1 racing',
-  'weekend-escapes':'Short getaways perfect for a quick break',
-}
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> },
@@ -31,8 +25,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   })
 
   if (!list || list.status !== 'live') notFound()
-
-  const subtitle = LIST_SUBTITLES[list.slug] ?? 'Curated trips for every explorer'
 
   return (
     <div style={{ background: '#ffffff', minHeight: '100vh', color: '#111111' }}>
@@ -62,9 +54,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <h1 style={{ fontSize: '40px', fontWeight: 700, color: '#111111', lineHeight: 1.2, margin: '0 0 8px' }}>
           {list.title}
         </h1>
-        <p style={{ fontSize: '16px', color: '#666666', margin: '0 0 12px' }}>
-          {subtitle}
-        </p>
+        {list.subtitle && (
+          <p style={{ fontSize: '16px', color: '#666666', margin: '0 0 12px' }}>
+            {list.subtitle}
+          </p>
+        )}
         <span style={{ display: 'inline-block', fontSize: '13px', color: '#999999', background: '#f5f5f5', borderRadius: '100px', padding: '4px 12px' }}>
           {list.trips.length} trip{list.trips.length !== 1 ? 's' : ''}
         </span>

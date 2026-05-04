@@ -85,9 +85,10 @@ export default function CreateListModal({
   onClose: () => void
   onSave: () => void
 }) {
-  const [title, setTitle]   = useState(editingList?.title  ?? '')
-  const [slug, setSlug]     = useState(editingList?.slug   ?? '')
-  const [status, setStatus] = useState(editingList?.status ?? 'draft')
+  const [title, setTitle]       = useState(editingList?.title    ?? '')
+  const [subtitle, setSubtitle] = useState(editingList?.subtitle ?? '')
+  const [slug, setSlug]         = useState(editingList?.slug     ?? '')
+  const [status, setStatus]     = useState(editingList?.status   ?? 'draft')
   const [trips, setTrips]   = useState<Trip[]>([])
   const [search, setSearch]     = useState('')
   const [tagFilter, setTagFilter] = useState('All')
@@ -153,7 +154,7 @@ export default function CreateListModal({
         const res = await fetch(`/api/lists/${editingList.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, slug, status, type: 'manual', enabled: true }),
+          body: JSON.stringify({ title, subtitle: subtitle || null, slug, status, type: 'manual', enabled: true }),
         })
         const data = await res.json()
         listId = data.id
@@ -184,7 +185,7 @@ export default function CreateListModal({
         const res = await fetch('/api/lists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, slug, status, type: 'manual', enabled: true }),
+          body: JSON.stringify({ title, subtitle: subtitle || null, slug, status, type: 'manual', enabled: true }),
         })
         const data = await res.json()
         listId = data.id
@@ -258,6 +259,15 @@ export default function CreateListModal({
                   value={title}
                   onChange={(e) => { setTitle(e.target.value); if (!editingList) setSlug(autoSlug(e.target.value)) }}
                   placeholder="List title"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#ccff00]/50"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 mb-1 block">Subtitle <span className="text-gray-600">(optional)</span></label>
+                <input
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="e.g. Short getaways perfect for a quick break"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#ccff00]/50"
                 />
               </div>

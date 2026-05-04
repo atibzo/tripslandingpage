@@ -27,12 +27,6 @@ const TRENDING_PLACEHOLDER = [
   { name: 'Coorg', img: 'https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=300', duration: '2N/3D' },
 ]
 
-const LIST_SUBTITLES: Record<string, string> = {
-  'leaving-soon': 'Trips departing in the next 30 days',
-  'filling-fast': 'Limited seats — grab your spot now',
-  'grand-prix-2026': 'Experience the thrill of Formula 1 racing',
-  'weekend-escapes': 'Short getaways perfect for a quick break',
-}
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -128,7 +122,7 @@ function FeaturedExperiences({ featured }: { featured: FeaturedTrip[] }) {
 
 function CuratedListRow({ list }: { list: ListWithTrips }) {
   if (!list.trips.length) return null
-  const subtitle = LIST_SUBTITLES[list.slug] ?? 'Curated trips for every explorer'
+  const subtitle = list.subtitle
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const [atStart, setAtStart] = useState(true)
@@ -156,9 +150,11 @@ function CuratedListRow({ list }: { list: ListWithTrips }) {
           <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#111111', lineHeight: '1.2', margin: 0 }}>
             {list.title}
           </h2>
-          <p style={{ fontSize: '16px', color: '#666666', marginTop: '4px', marginBottom: 0 }}>
-            {subtitle}
-          </p>
+          {subtitle && (
+            <p style={{ fontSize: '16px', color: '#666666', marginTop: '4px', marginBottom: 0 }}>
+              {subtitle}
+            </p>
+          )}
         </div>
         <div className="flex flex-col items-end gap-2 flex-shrink-0 mt-2">
           {showArrows && (

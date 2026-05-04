@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     data: {
       type: body.type || 'manual',
       title: body.title,
+      subtitle: body.subtitle ?? null,
       slug: body.slug || body.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
       rule: body.rule,
       rule_parameter: body.rule_parameter,
