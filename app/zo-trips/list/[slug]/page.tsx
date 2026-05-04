@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import type { CuratedListTrip } from '@prisma/client'
 import TripCard from '@/components/TripCard'
 
 export const revalidate = 0
@@ -77,7 +78,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {list.trips.map((trip, i) => (
+            {list.trips.map((trip: CuratedListTrip, i: number) => (
               <TripCard key={trip.id} trip={trip} index={i} />
             ))}
           </div>
