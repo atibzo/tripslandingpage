@@ -10,11 +10,16 @@ export const metadata: Metadata = {
 }
 
 async function getLists() {
-  return prisma.curatedList.findMany({
-    where: { status: 'live', enabled: true },
-    include: { trips: { orderBy: { position: 'asc' } } },
-    orderBy: { display_order: 'asc' },
-  })
+  try {
+    return await prisma.curatedList.findMany({
+      where: { status: 'live', enabled: true },
+      include: { trips: { orderBy: { position: 'asc' } } },
+      orderBy: { display_order: 'asc' },
+    })
+  } catch (err) {
+    console.error('getLists error:', err)
+    return []
+  }
 }
 
 export default async function Page() {
