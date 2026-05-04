@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { usePageStore, DEFAULT_TRENDING } from '@/lib/pageStore'
 import type { FeaturedTrip } from '@/lib/pageStore'
-import type { CuratedList, CuratedListTrip } from '@prisma/client'
+import type { CuratedList, CuratedListTrip } from '@/lib/prismaTypes'
 import FeaturedTripCard from './FeaturedTripCard'
 import TripCard from './TripCard'
 
