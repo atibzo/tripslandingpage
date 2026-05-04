@@ -12,10 +12,16 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
 
   async function fetchLists() {
-    const res = await fetch('/api/lists')
-    const data = await res.json()
-    dispatch({ type: 'SET_LISTS', lists: data })
-    setLoading(false)
+    try {
+      const res = await fetch('/api/lists')
+      if (!res.ok) throw new Error(`API error ${res.status}`)
+      const data = await res.json()
+      dispatch({ type: 'SET_LISTS', lists: data })
+    } catch (err) {
+      console.error('Failed to fetch lists:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { fetchLists() }, [])

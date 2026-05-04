@@ -3,11 +3,16 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
 export async function GET() {
-  const lists = await prisma.curatedList.findMany({
-    include: { trips: { orderBy: { position: 'asc' } } },
-    orderBy: { display_order: 'asc' },
-  })
-  return NextResponse.json(lists)
+  try {
+    const lists = await prisma.curatedList.findMany({
+      include: { trips: { orderBy: { position: 'asc' } } },
+      orderBy: { display_order: 'asc' },
+    })
+    return NextResponse.json(lists)
+  } catch (err) {
+    console.error('GET /api/lists error:', err)
+    return NextResponse.json({ error: 'Failed to fetch lists' }, { status: 500 })
+  }
 }
 
 export async function POST(req: NextRequest) {
