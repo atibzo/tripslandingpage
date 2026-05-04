@@ -2,21 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import TripCard from '@/components/TripCard'
-
-type Trip = {
-  id: number
-  list_id: number
-  trip_id: string
-  trip_name: string
-  trip_image: string
-  trip_tag: string | null
-  trip_duration: string
-  trip_price: number
-  trip_sold_out: boolean
-  seats_left: number | null
-  next_batch: string | null
-  position: number
-}
+import type { CuratedListTrip as Trip } from '@/lib/prismaTypes'
 
 export const revalidate = 0
 
